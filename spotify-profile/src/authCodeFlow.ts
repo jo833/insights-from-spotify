@@ -1,16 +1,4 @@
-const clientId = process.env.CLIENT_ID; //.env files do not technically work and is a stand in for security purposes; replace clientId
-const params = new URLSearchParams(window.location.search);
-const code = params.get("code");
-
-if (!code) {
-  redirectToAuthCodeFlow(clientId as string);
-} else {
-  const accessToken = await getAccessToken(clientId as string, code);
-  const profile = await fetchProfile(accessToken);
-  populateUI(profile);
-}
-
-async function redirectToAuthCodeFlow(clientId: string) {
+export async function redirectToAuthCodeFlow(clientId: string) {
   const verifier = generateCodeVerifier(128);
   const challenge = await generateCodeChallenge(verifier);
 
@@ -20,7 +8,7 @@ async function redirectToAuthCodeFlow(clientId: string) {
   params.append("client_id", clientId);
   params.append("response_type", "code");
   params.append("redirect_uri", "http://localhost:5173/callback");
-  params.append("scope", "user-read-private user-read-email");
+  params.append("scope", "user-read-private user-read-email user-top-read");
   params.append("code_challenge_method", "S256");
   params.append("code_challenge", challenge);
 
@@ -46,8 +34,10 @@ async function generateCodeChallenge(codeVerifier: string) {
     .replace(/\//g, "_")
     .replace(/=+$/, "");
 }
-
-async function getAccessToken(clientId: string, code: string): Promise<string> {
+export async function getAccessToken(
+  clientId: string,
+  code: string
+): Promise<string> {
   const verifier = localStorage.getItem("verifier");
 
   const params = new URLSearchParams();
@@ -66,32 +56,3 @@ async function getAccessToken(clientId: string, code: string): Promise<string> {
   const { access_token } = await result.json();
   return access_token;
 }
-
-async function fetchProfile(token: string): Promise<UserProfile> {
-  const result = await fetch("https://api.spotify.com/v1/me", {
-    method: "GET",
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-  return await result.json();
-}
-
-function populateUI(profile: UserProfile) {
-  document.getElementById("displayName")!.innerText = profile.display_name;
-  if (profile.images[0]) {
-    const profileImage = new Image(200, 200);
-    profileImage.src = profile.images[0].url;
-    document.getElementById("avatar")!.appendChild(profileImage);
-  }
-  document.getElementById("id")!.innerText = profile.id;
-  document.getElementById("email")!.innerText = profile.email;
-  document.getElementById("uri")!.innerText = profile.uri;
-  document
-    .getElementById("uri")!
-    .setAttribute("href", profile.external_urls.spotify);
-  document.getElementById("url")!.innerText = profile.href;
-  document.getElementById("url")!.setAttribute("href", profile.href);
-  document.getElementById("imgUrl")!.innerText =
-    profile.images[0]?.url ?? "(no profile image)";
-}
-export {};

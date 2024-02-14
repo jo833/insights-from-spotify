@@ -1,5 +1,5 @@
 {
-  "name": "playlist-creator-frontend",
+  "name": "spotify-profile",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,8 +9,10 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@types/node": "^20.11.16",
     "typescript": "^5.2.2",
-    "vite": "^5.0.8"
+    "vite": "^5.1.0"
+  },
+  "dependencies": {
+    "@spotify/web-api-ts-sdk": "^1.2.0"
   }
 }
