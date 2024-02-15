@@ -12,9 +12,19 @@ if (!code) {
   const profile = await fetchProfile(accessToken);
   const topTrack = await getTopTracks(accessToken);
   const formattedTopTracks = await formatTopTracks(topTrack);
+  const topTrackImg = await getTopTracksImg(topTrack);
+
   const topArtists = await getTopArtists(accessToken);
+  const topArtistsImg = await getTopArtistsImg(topArtists);
   const formattedTopArtists = await formatTopArtists(topArtists);
-  populateUI(profile, formattedTopTracks, formattedTopArtists);
+  populateUI(
+    profile,
+
+    topTrackImg,
+    formattedTopTracks,
+    topArtistsImg,
+    formattedTopArtists
+  );
 }
 
 async function fetchProfile(token: string): Promise<UserProfile> {
@@ -33,6 +43,14 @@ async function getTopTracks(token: string) {
   return (await results.json()).items;
 }
 
+async function getTopTracksImg(topTracks: any) {
+  let results = topTracks.map(
+    (track: { album: { images: { url: string }[] } }) =>
+      track.album.images[0].url
+  );
+  return results;
+}
+
 async function formatTopTracks(topTracks: any) {
   let results = topTracks.map(
     (track: { name: any; artists: { name: string }[] }) =>
@@ -49,12 +67,25 @@ async function getTopArtists(token: string) {
   return (await results.json()).items;
 }
 
+async function getTopArtistsImg(topArtists: any) {
+  let results = topArtists.map(
+    (artist: { images: { url: string }[] }) => artist.images[0].url
+  );
+  return results;
+}
+
 async function formatTopArtists(topArtists: any) {
   let results = topArtists.map((artist: { name: any }) => " " + artist.name);
   return results;
 }
 
-function populateUI(profile: UserProfile, topTracks: any, topArtists: any) {
+function populateUI(
+  profile: UserProfile,
+  topTracksImg: any,
+  topTracks: any,
+  topArtistsImg: any,
+  topArtists: any
+) {
   document.getElementById("displayName")!.innerText = profile.display_name;
   if (profile.images[0]) {
     const profileImage = new Image(200, 200);
@@ -71,6 +102,15 @@ function populateUI(profile: UserProfile, topTracks: any, topArtists: any) {
   document.getElementById("url")!.setAttribute("href", profile.href);
   document.getElementById("imgUrl")!.innerText =
     profile.images[0]?.url ?? "(no profile image)";
-  document.getElementById("topTracks")!.innerText = topTracks.toString(); //JSON.stringify(topTrack);
-  document.getElementById("topArtists")!.innerText = topArtists;
+  let i = 1;
+  while (i < 6) {
+    document.getElementById("track" + i + "name")!.innerText = topTracks[i - 1];
+    document.getElementById("artist" + i + "name")!.innerText =
+      topArtists[i - 1];
+    (<HTMLImageElement>document.getElementById("trackImg" + i))!.src =
+      topTracksImg[i - 1];
+    (<HTMLImageElement>document.getElementById("artist" + i))!.src =
+      topArtistsImg[i - 1];
+    i++;
+  }
 }
