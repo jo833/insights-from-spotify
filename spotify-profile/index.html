@@ -3,11 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <title>My Spotify Profile</title>
+    <link rel="stylesheet" href="src/style.css" />
     <script src="src/script.ts" type="module"></script>
   </head>
   <body>
-    <h1>Spotify Profile Data</h1>
-
+    <div class="band-header">
+      <header class="site-header">
+        <h1>Spotify Profile Data</h1>
+      </header>
+    </div>
     <section id="profile">
       <h2>Logged in as <span id="displayName"></span></h2>
       <span id="avatar"></span>
@@ -17,9 +21,57 @@
         <li>Spotify URI: <a id="uri" href="#"></a></li>
         <li>Link: <a id="url" href="#"></a></li>
         <li>Profile Image: <span id="imgUrl"></span></li>
-        <li>Top Tracks:<span id="topTracks"></span></li>
-        <li>Top Artists:<span id="topArtists"></span></li>
       </ul>
+    </section>
+    <section id="topTracksImg">
+      <h3>Top Tracks <span id="topTracksHeader"></span></h3>
+      <div class="row">
+        <div class="column">
+          <img id="trackImg1" src="" alt="Track1" style="width: 100%" />
+          <p><span id="track1name"></span></p>
+        </div>
+        <div class="column">
+          <img src="" alt="Track2" style="width: 100%" id="trackImg2" />
+          <p><span id="track2name"></span></p>
+        </div>
+        <div class="column">
+          <img src="" alt="Track3" style="width: 100%" id="trackImg3" />
+          <p><span id="track3name"></span></p>
+        </div>
+        <div class="column">
+          <img src="" alt="Track4" style="width: 100%" id="trackImg4" />
+          <p><span id="track4name"></span></p>
+        </div>
+        <div class="column">
+          <img src="" alt="Track5" style="width: 100%" id="trackImg5" />
+          <p><span id="track5name"></span></p>
+        </div>
+      </div>
+    </section>
+    <section id="topArtists">
+      <h3>Top Artists <span id="topArtistsHeader"></span></h3>
+      <div class="row">
+        <div class="column">
+          <img src="" alt="Artist1" style="width: 100%" id="artist1" />
+          <p><span id="artist1name"></span></p>
+        </div>
+        <div class="column">
+          <img src="" alt="Artist2" style="width: 100%" id="artist2" />
+          <p><span id="artist2name"></span></p>
+        </div>
+        <div class="column">
+          <img src="" alt="Artist3" style="width: 100%" id="artist3" />
+          <p><span id="artist3name"></span></p>
+        </div>
+        <div class="column">
+          <img src="" alt="Artist4" style="width: 100%" id="artist4" />
+          <p><span id="artist4name"></span></p>
+        </div>
+        <div class="column">
+          <img src="" alt="Artist5" style="width: 100%" id="artist5" />
+          <p><span id="artist5name"></span></p>
+        </div>
+      </div>
     </section>
   </body>
 </html>
