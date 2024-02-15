@@ -1,4 +1,4 @@
-# spotify-insights
+# insights-from-spotify
 
 A project that uses the Spotify Web Api, TypeScript, Node.js, and vite. 
 
