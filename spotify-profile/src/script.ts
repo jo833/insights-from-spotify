@@ -13,7 +13,6 @@ if (!code) {
   const topTrack = await getTopTracks(accessToken);
   const formattedTopTracks = await formatTopTracks(topTrack);
   const topTrackImg = await getTopTracksImg(topTrack);
-
   const topArtists = await getTopArtists(accessToken);
   const topArtistsImg = await getTopArtistsImg(topArtists);
   const formattedTopArtists = await formatTopArtists(topArtists);
@@ -28,22 +27,32 @@ if (!code) {
 }
 
 async function fetchProfile(token: string): Promise<UserProfile> {
-  const result = await fetch("https://api.spotify.com/v1/me", {
-    method: "GET",
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-  return await result.json();
+  try {
+    const result = await fetch("https://api.spotify.com/v1/me", {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return await result.json();
+  } catch (err) {
+    throw new Error(`Failure to fetch Profile`);
+  }
 }
 async function getTopTracks(token: string) {
-  const results = await fetch(
-    "https://api.spotify.com/v1/me/top/tracks?time_range=long_term&limit=5",
-    { method: "GET", headers: { Authorization: `Bearer ${token}` } }
-  );
-  return (await results.json()).items;
+  try {
+    const results = await fetch(
+      "https://api.spotify.com/v1/me/top/tracks?time_range=long_term&limit=5",
+      { method: "GET", headers: { Authorization: `Bearer ${token}` } }
+    );
+    return (await results.json()).items;
+  } catch (err) {
+    throw new Error(`Failure to fetch Top Tracks`);
+  }
 }
 
-async function getTopTracksImg(topTracks: any) {
+function getTopTracksImg(topTracks: any) {
+  if (topTracks === undefined || topTracks.length == 0) {
+    throw new Error("Unable to get Top Tracks Images");
+  }
   let results = topTracks.map(
     (track: { album: { images: { url: string }[] } }) =>
       track.album.images[0].url
@@ -51,7 +60,10 @@ async function getTopTracksImg(topTracks: any) {
   return results;
 }
 
-async function formatTopTracks(topTracks: any) {
+function formatTopTracks(topTracks: any) {
+  if (topTracks === undefined || topTracks.length == 0) {
+    throw new Error(`Unable to format Top Tracks`);
+  }
   let results = topTracks.map(
     (track: { name: any; artists: { name: string }[] }) =>
       " " + track.name + " by " + track.artists[0].name
@@ -60,21 +72,31 @@ async function formatTopTracks(topTracks: any) {
 }
 
 async function getTopArtists(token: string) {
-  const results = await fetch(
-    "https://api.spotify.com/v1/me/top/artists?time_range=long_term&limit=5",
-    { method: "GET", headers: { Authorization: `Bearer ${token}` } }
-  );
-  return (await results.json()).items;
+  try {
+    const results = await fetch(
+      "https://api.spotify.com/v1/me/top/artists?time_range=long_term&limit=5",
+      { method: "GET", headers: { Authorization: `Bearer ${token}` } }
+    );
+    return (await results.json()).items;
+  } catch (err) {
+    throw new Error(`Unable to fetch Top Artists`);
+  }
 }
 
-async function getTopArtistsImg(topArtists: any) {
+function getTopArtistsImg(topArtists: any) {
+  if (topArtists === undefined || topArtists.length == 0) {
+    throw new Error(`Unable to get Top Artists Images`);
+  }
   let results = topArtists.map(
     (artist: { images: { url: string }[] }) => artist.images[0].url
   );
   return results;
 }
 
-async function formatTopArtists(topArtists: any) {
+function formatTopArtists(topArtists: any) {
+  if (topArtists === undefined || topArtists.length == 0) {
+    throw new Error(`Unable to format Top Artists`);
+  }
   let results = topArtists.map((artist: { name: any }) => " " + artist.name);
   return results;
 }
